@@ -8,7 +8,7 @@ from depot.demand import DemandData
 ap = argparse.ArgumentParser()
 ap.add_argument('--name', default='Sydney')
 ap.add_argument('--creator', default='willbarouch')
-ap.add_argument('--version', default='2.0.0')
+ap.add_argument('--version', default='2.1.0')
 ap.add_argument('--map-id', default='sydney')
 a = ap.parse_args()
 

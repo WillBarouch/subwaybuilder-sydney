@@ -1,5 +1,21 @@
 # Changelog
 
+## v2.1.0 — 2026-09-18
+
+Water-depth fix on top of v2.0.0. The demand data is unchanged, so v2.0.0 saves carry over.
+
+- **Depth bands no longer overlap.** depot builds each band from its outer edge only (so deeper
+  water inside a band is covered over), pads every band by about 10 m and trims it against the
+  shallower ones. That was harmless on the old global depth grid, but on detailed survey data it
+  left overlapping slivers, which the game drew as dark streaks along every edge, with odd straight
+  cut-outs. Bands are now built with their holes and meet exactly, with no padding or trimming.
+- **The depth grid is lightly smoothed** (about 75 m) before the bands are drawn, which removes the
+  blockiness and the seams where survey sources meet.
+- On 9,100 sample points across the harbour: points covered by overlapping bands fell from 13.7% to
+  0%, and points whose band disagreed with the depth data from 24.3% to 6.2% (the rest is water at
+  the shoreline, which falls back to the 0-5 m band).
+- Very small islands, such as Shark Island, lose their thin shallow rim as a result of the smoothing.
+
 ## v2.0.0 — 2026-09-17
 
 A full rebuild of the map with a new generation pipeline (`scripts/`). The map code is still `SYD`,
