@@ -41,8 +41,44 @@ src = swap(src, "# Increase the resolution multiplier for smoother curves",
            "dense_depths = interp_func(interp_points).reshape(dense_mesh_lon.shape)",
 """dense_lons, dense_lats, dense_depths = lons, lats, depths""")
 assert "interp(" not in src.split("def load_bathymetry_data")[1].split("contourf")[0], "resampling not removed"
+# 3. build depth bands with their holes, from a lightly smoothed grid. depot builds
+#    each band from outer rings only (holes filled) and then pads every band by
+#    ~10 m and clips it against the shallower ones: harmless on GEBCO's smooth
+#    grid, but on survey data it left overlapping slivers that render as dark
+#    streaks and odd cut-outs (seen in-game 2026-09-17). contourpy's OuterOffset
+#    output gives disjoint bands that meet exactly, so no padding or clipping.
+src = swap(src, "# Generate contours", "contours_by_level.reverse()",
+"""# Generate contours
+        if self.verb:
+            print("  Generating hole-aware depth bands")
+        from contourpy import contour_generator, FillType
+        from scipy.ndimage import gaussian_filter
+        smooth = gaussian_filter(np.asarray(dense_depths, dtype=np.float64), sigma=SMOOTH_SIGMA)
+        gen = contour_generator(dense_lons, dense_lats, smooth, fill_type=FillType.OuterOffset)
+        levels = sorted(float(v) for v in DEPTH_LEVELS)
+        contours_by_level = []
+        for i in range(len(levels) - 1):
+            lo, hi = levels[i], levels[i + 1]
+            if lo >= 0:
+                continue
+            band_polys = []
+            for pts, offs in zip(*gen.filled(lo, hi)):
+                rings = [pts[offs[k]:offs[k + 1]] for k in range(len(offs) - 1)]
+                rings = [r for r in rings if len(r) >= 4]
+                if not rings:
+                    continue
+                poly = Polygon(rings[0], rings[1:])
+                if not poly.is_valid:
+                    poly = poly.buffer(0)
+                if not poly.is_empty and poly.area > 1e-9:
+                    band_polys.append(poly)
+            if band_polys:
+                contours_by_level.append((lo, unary_union(band_polys)))
+        # deepest -> shallowest, as the rest of depot's function expects
+        contours_by_level.sort(key=lambda x: x[0])""")
 
 ns = dict(vars(depot_maps))
+ns['SMOOTH_SIGMA'] = 1.5          # grid cells (~75 m)
 exec(src, ns)
 MapGen.load_bathymetry_data = ns['load_bathymetry_data']
 
@@ -60,7 +96,7 @@ t0 = time.time()
 for f in ('ocean_depth_index.json.gz', 'ocean_depth_index_contours.json.gz',
           'ocean_foundations.geojson', 'ocean_foundations.mbtiles'):
     if os.path.exists(A(f)):
-        os.replace(A(f), A(f + '.gebco'))
+        os.replace(A(f), A(f + '.prev'))
 obj.load_bathymetry_data(opendap_url=COMPOSITE)
 print(f"depth index built in {(time.time()-t0)/60:.1f} min", flush=True)
 obj._generate_ocean_depth_tiles()
