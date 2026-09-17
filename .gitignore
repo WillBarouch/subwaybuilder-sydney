@@ -1,0 +1,8 @@
+# downloaded inputs, build outputs and packaged maps
+data/
+build/
+deliverables/
+old/
+.scratch/
+__pycache__/
+*.pyc
