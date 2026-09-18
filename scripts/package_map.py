@@ -40,7 +40,7 @@ REQUIRED = [f"{a.code}.pmtiles", "buildings_index.bin.gz", "config.json",
 # Optional files Railyard recognises (railyard/internal/files/map_validation.go):
 # the ocean depth index (game water-depth costs) and building foundation tiles,
 # plus the root-level .railyard_map helper folder (special demand schema).
-OPTIONAL = ["ocean_depth_index.json.gz", f"{a.code}_foundations.pmtiles",
+OPTIONAL = ["ocean_depth_index.json.gz", "walk_graph.bin.gz", f"{a.code}_foundations.pmtiles",
             ".railyard_map/special_demand_points.json", ".railyard_map/special_demand_types.json"]
 
 os.makedirs(a.out, exist_ok=True)

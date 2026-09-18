@@ -14,7 +14,7 @@ Three passes:
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 from mapconfig import CITY, BBOX as _BBOX, CITY_DIR, OA_CENTROIDS, SPECIAL_DIR
-import json, re, collections
+import json, re, collections, os
 
 DESC = f'{CITY_DIR}/description.md'
 src = open(DESC).read()
@@ -41,6 +41,12 @@ WATER_FEATURE = ("<li><strong>Water Depths</strong> — A water depth index buil
                  "harbour and estuary grids, GEBCO offshore) keeps track out of the water and "
                  "gives the harbour its real depth; the in-game ocean foundations layer "
                  "visualizes it.</li>")
+
+
+WALK_FEATURE = ("<li><strong>Walking Network</strong> — A walk graph of every street, footpath, "
+                "shared path and set of steps (from OpenStreetMap), so commuters walk to stations along "
+                "real routes and around rivers and bays rather than in straight lines (Subway Builder "
+                "1.7.17+). Footpaths also show on the map.</li>")
 
 
 def group_categories(text):
@@ -70,6 +76,8 @@ def rewrite_tail(text):
     head = head.replace("</h3>\n", "</h3>\n" + SUMMARY_LINE, 1)
     feats = tail.split("<h2>Methodology</h2>", 1)[0]
     feats = re.sub(r"<li><strong>Water Depths</strong>.*?</li>", WATER_FEATURE, feats, flags=re.S)
+    if os.path.exists(f"{CITY_DIR}/walk_graph.bin.gz"):
+        feats = feats.replace("</ul>", WALK_FEATURE + "\n</ul>", 1)
     method = re.search(r"<h2>Methodology</h2>\n<ul>\n(.*?)</ul>\n", tail, re.S).group(1)
     sources = re.search(r"<h2>Data Sources</h2>\n<ul>\n(.*?)</ul>\n", tail, re.S).group(1)
     method = method.replace("<p>", "").replace("</p>", "")

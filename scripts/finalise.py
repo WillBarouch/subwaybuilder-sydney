@@ -8,7 +8,7 @@ from depot.demand import DemandData
 ap = argparse.ArgumentParser()
 ap.add_argument('--name', default='Sydney')
 ap.add_argument('--creator', default='willbarouch')
-ap.add_argument('--version', default='2.1.0')
+ap.add_argument('--version', default='2.2.0')
 ap.add_argument('--map-id', default='sydney')
 a = ap.parse_args()
 
@@ -46,6 +46,7 @@ METHODOLOGY = [
  """<li><strong>Airports:</strong> Sydney Airport's 2025 traffic (42.54 million passengers, 17.17 million international) split across T1, T2 and T3, less transfers. Western Sydney International, which opens to passengers on 25 October 2026, is sized at its Stage 1 capacity of 10 million passengers a year.</li>""",
  """<li><strong>Attractions:</strong> published visitor numbers where available (Darling Harbour 26.4 million and The Rocks 14 million a year, the Opera House precinct, Taronga, Luna Park, Bondi). Stadiums and arenas use capacity times a typical event programme. Beaches, parks and shopping centres are estimates scaled to size and standing, discounted for local walk-in trips. Hospitals count outpatients and visitors at about 2.5 a day per bed.</li>""",
  """<li>Commute distances and times are real driving routes from a local OSRM server.</li>""",
+ """<li><strong>Walking.</strong> Commuters walk to and from stations on a network built from OpenStreetMap: every street except motorways and their ramps, plus footpaths, shared paths, steps and separately mapped sidewalks (which connect about 1,000 km of footpaths that would otherwise be cut off from the streets), minus anything tagged private or no foot access. Only the connected network is kept (98% of walkable length); 99% of people's demand points sit within the game's 250 m snapping distance of it. Points that don't, mostly job sites behind private roads such as defence land and the Kurnell refinery, walk in straight lines as before.</li>""",
  """<li><strong>Water depths.</strong> Instead of the global 460 m GEBCO grid alone, depths come from a roughly 50 m composite. In priority order: the NSW Government's statewide multibeam and marine-lidar mosaic; Wilson &amp; Power's seamless 10 m grids for Sydney Harbour (including the Parramatta and Lane Cove rivers and Middle Harbour) and for Botany Bay, the Georges River and Port Hacking; their 50 m Hawkesbury grid (Broken Bay, Pittwater, Brisbane Water); and GEBCO for the open ocean. Depth bands are drawn from that grid, lightly smoothed (about 75 m) and built with their holes so neighbouring bands meet exactly, so the harbour reaches its real 40+ m and the rivers keep their channels. Water with no survey data (inland dams, some lagoons) falls back to the shallowest band.</li>""",
 ]
 SOURCES = [

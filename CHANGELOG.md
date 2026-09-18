@@ -1,5 +1,29 @@
 # Changelog
 
+## v2.2.0 — 2026-09-18
+
+Walking along real streets, for Subway Builder 1.7.17's walk graph. The demand data is unchanged,
+so v2.x saves carry over.
+
+- **Commuters walk the street network.** The map ships a walk graph (`walk_graph.bin.gz`) built from
+  OpenStreetMap: every street except motorways and their ramps, plus footpaths, shared paths, steps
+  and separately mapped sidewalks, minus anything tagged private or closed to pedestrians. Walks to
+  and from stations now follow real routes and go around the harbour, rivers and bays instead of
+  across them.
+  - 533,000 nodes and 742,000 edges covering 50,600 km of walkable ways; 17 MB compressed.
+  - Only the connected network is kept (98% of walkable length). Sidewalks are included, though the
+    game's docs suggest skipping them, because in Sydney about 1,000 km of footpaths (the airport
+    precinct, Wolli Creek, newer estates) only reach the streets through them.
+  - 99% of people's demand points are within the game's 250 m snapping distance. The rest, mostly
+    job sites behind private roads such as defence land and the Kurnell refinery, walk in straight
+    lines as before.
+- **Footpaths show on the map.** 108,000 footpaths, shared paths, steps and pedestrian malls are
+  added to `roads.geojson` as pedestrian ways (sidewalks are left off so streets don't get doubled).
+- Older game versions ignore the walk graph and behave exactly as v2.1.0.
+- **Installing through Railyard:** Railyard currently only copies the files it knows about, so the
+  walk graph is left out until it recognises `walk_graph.bin`. Until then, copy `walk_graph.bin.gz`
+  from the ZIP into the installed map folder (`cities/data/SYD/`).
+
 ## v2.1.0 — 2026-09-18
 
 Water-depth fix on top of v2.0.0. The demand data is unchanged, so v2.0.0 saves carry over.

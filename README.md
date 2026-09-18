@@ -59,6 +59,7 @@ python scripts/build_entertainment.py    # venues, beaches, shopping, hospitals
 python scripts/assemble_demand.py        # add special demand to the base matrix
 python scripts/build_bathy_composite.py  # composite water depths
 python scripts/build_bathymetry.py       # depth index + ocean tiles, re-merge map tiles
+python scripts/build_walk_graph.py       # walk_graph.bin.gz + footpaths in roads.geojson (game 1.7.17+)
 bash scripts/route_and_package.sh        # OSRM routing, config/description, deliverables/SYD.zip
 ```
 
