@@ -32,8 +32,8 @@ GROUPS = [('Infrastructure', ['Airports', 'Hospitals']),
           ('Attractions', None)]          # None: everything else, in depot's order
 
 SUMMARY_LINE = ("<p>Greater Sydney end to end: the Central Coast, the Blue Mountains foothills, "
-                "the Illawarra and Western Sydney International. Commutes come from Transport for "
-                "NSW travel-zone journey-to-work data grown to 2026, on one demand point per ABS "
+                "the Illawarra and Western Sydney International. Commutes come from the 2021 Census, "
+                "where each SA1's workers work, grown to 2026, on one demand point per ABS "
                 "SA1.</p>\n")
 
 WATER_FEATURE = ("<li><strong>Water Depths</strong> — A water depth index built from a ~50 m "
@@ -85,9 +85,9 @@ def rewrite_tail(text):
     licence = "<h2>License</h2>\n" + tail.split("<h2>License</h2>\n", 1)[1]
 
     short = [
-        f"<li><strong>Commutes.</strong> Transport for NSW journey-to-work flows between travel "
-        f"zones, fitted to TfNSW's official 2026 projections of where people live and work, then "
-        f"split onto one demand point per ABS SA1 ({stat('Demand Points')} points). "
+        f"<li><strong>Commutes.</strong> 2021 Census flows from each SA1 to each SA2 of work, "
+        f"fitted to TfNSW's official 2026 projections of where people live and work, on one "
+        f"demand point per ABS SA1 ({stat('Demand Points')} points). "
         f"{stat('Modeled Normal Demand')} commuters, mean road commute "
         f"{stat('Mean Commute Distance (km)')} km.</li>",
         f"<li><strong>Special demand</strong> ({stat('Modeled Special Demand')} trips a day) covers "
@@ -96,9 +96,9 @@ def rewrite_tail(text):
         "live where the 2021 Census says people attending that kind of institution live.</li>",
         "<li><strong>Water depths</strong> come from NSW survey bathymetry rather than the global "
         "grid, so the harbour and the rivers keep their channels.</li>",
-        "<li><strong>Worth knowing:</strong> the commute pattern is the 2011 travel-zone table "
-        "grown to 2026 (the finest public one), and campus splits and visitor numbers for beaches, "
-        "parks and shopping centres are estimates.</li>",
+        "<li><strong>Worth knowing:</strong> the ABS randomly adjusts small census counts, "
+        "people who usually work at home are estimated from 2011 rates, and campus splits and "
+        "visitor numbers for beaches, parks and shopping centres are estimates.</li>",
     ]
 
     return (head + "<h2>Additional Features</h2>\n" + feats

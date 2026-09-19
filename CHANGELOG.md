@@ -1,9 +1,24 @@
 # Changelog
 
-## v2.2.0 — 2026-09-18
+## v2.2.0 — 2026-09-19
 
-Walking along real streets, for Subway Builder 1.7.17's walk graph. The demand data is unchanged,
-so v2.x saves carry over.
+2021 Census commutes, walking along real streets for Subway Builder 1.7.17's walk graph, and pools no
+longer counting as water. The map code is unchanged, so v2.x saves load; the commute demand is new.
+
+- **Commutes now come from the 2021 Census** (ABS TableBuilder) instead of TfNSW's 2011 travel-zone
+  table: where each SA1's workers work (by SA2), and SA2-to-SA2 totals.
+  - Fitted to TfNSW's 2026 projections as before. Only three SA2s at each end had too little 2021
+    data for their 2026 size and borrow their neighbours' pattern (the 2011 table needed this for
+    far more areas, as whole estates and business parks didn't exist yet).
+  - People who usually work at home can't be separated in these tables, so they are estimated from
+    the 2011 travel-mode field and taken out, as before.
+  - Against the 2021 Census itself, the share of commuters in the wrong SA3-to-SA3 pair falls from
+    8.4% to 7.1%, and the share working in their own SA3 is 31.1% (census 31.8%, v2.1 29.4%).
+  - 2.89 million commuters in 78,300 pops (v2.1: 2.93 million in 82,200); mean road commute 15.9 km
+    (v2.1: 16.0 km).
+  - Slightly more short trips: 15.6% of commuters travel under 3 km by road (v2.1: 14.3%), as the
+    2021 Census has more people working locally. The walk graph makes walks follow the street network,
+    which is longer than a straight line and so offsets this.
 
 - **Commuters walk the street network.** The map ships a walk graph (`walk_graph.bin.gz`) built from
   OpenStreetMap: every street except motorways and their ramps, plus footpaths, shared paths, steps
