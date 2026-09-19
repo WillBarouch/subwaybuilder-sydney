@@ -11,9 +11,10 @@ the city code, plus the optional extras listed in OPTIONAL below:
       roads.geojson
       runways_taxiways.geojson
 
-manifest.json is NOT bundled -- it is uploaded alongside the ZIP as a separate
-release asset so Railyard can check compatibility without downloading the
-archive. For a map it needs only the subway-builder version range.
+manifest.json is NOT bundled -- it goes up as its own release asset beside the
+ZIP, so Railyard can check compatibility without downloading the archive.
+Uploading it is not optional: a release published without one fails the
+registry's game_version_valid integrity check and is dropped from downloads.
 """
 import sys as _sys, os as _os
 _sys.path.insert(0,_os.path.dirname(_os.path.abspath(__file__)))
@@ -26,6 +27,7 @@ ap.add_argument('--out', default='deliverables')
 ap.add_argument('--code', default=CITY)
 ap.add_argument('--game-range', default='>=1.5.0',
                 help='semver range for the subway-builder dependency')
+ap.add_argument('--map-id', default='sydney', help='registry listing id')
 a = ap.parse_args()
 
 # buildings_index: the publishing guide still lists the .json, but every map
@@ -38,7 +40,7 @@ REQUIRED = [f"{a.code}.pmtiles", "buildings_index.bin.gz", "config.json",
 # Optional files Railyard recognises (railyard/internal/files/map_validation.go):
 # the ocean depth index (game water-depth costs) and building foundation tiles,
 # plus the root-level .railyard_map helper folder (special demand schema).
-OPTIONAL = ["ocean_depth_index.json.gz", f"{a.code}_foundations.pmtiles",
+OPTIONAL = ["ocean_depth_index.json.gz", "walk_graph.bin.gz", f"{a.code}_foundations.pmtiles",
             ".railyard_map/special_demand_points.json", ".railyard_map/special_demand_types.json"]
 
 os.makedirs(a.out, exist_ok=True)
@@ -46,7 +48,9 @@ missing = [f for f in REQUIRED if not os.path.exists(os.path.join(a.src, f))]
 if missing:
     raise SystemExit(f"cannot package, missing: {missing}")
 
-manifest = {"dependencies": {"subway-builder": a.game_range}}
+cfg = json.load(open(os.path.join(a.src, "config.json")))
+manifest = {"id": a.map_id, "name": cfg["name"], "version": cfg["version"],
+            "dependencies": {"subway-builder": a.game_range}}
 mpath = os.path.join(a.out, "manifest.json")
 json.dump(manifest, open(mpath, "w"), indent=2)
 

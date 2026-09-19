@@ -12,10 +12,12 @@ ZIP are not committed; release assets carry the finished map.
   An SA1's jobs get their own point when they sit more than 500 m from its homes.
 - **Homes and jobs (2026):** Transport for NSW Travel Zone Projections 2024 (TZP24), placed onto mesh
   blocks with TfNSW's travel-zone concordance.
-- **Commutes:** TfNSW Journey to Work 2011 (travel zone x travel zone, Table 19), with home-workers
-  removed. The 2011 pattern is fitted to the 2026 zone totals, and new growth zones borrow their
-  neighbours' pattern. Flows are then split onto SA1 points and sampled down to about 82k pops, holding
-  point totals, SA3-to-SA3 totals and the trip-length distribution.
+- **Commutes:** 2021 Census place of work from ABS TableBuilder: SA1 (home) x SA2 (work) and SA2 x SA2.
+  Usual home-workers are taken out using TfNSW Journey to Work 2011 rates (the 2021 tables have no
+  travel mode). SA2-to-SA2 flows are fitted to the 2026 totals, with new growth areas borrowing their
+  neighbours' pattern; each SA1 keeps its own pattern within that. Flows are split onto SA1 points and
+  sampled down to about 78k pops, holding point totals, SA3-to-SA3 totals and the trip-length
+  distribution.
 - **Special demand:** non-work trips only (staff are already jobs).
   - **Universities:** DoE 2024 enrolments with online students removed.
   - **TAFE:** census vocational students.
@@ -48,6 +50,9 @@ From the repository root:
 bash scripts/fetch_sources.sh            # TfNSW JTW 2011, travel zones, TZP24, ABS DataPacks, NSW OSM
 bash scripts/fetch_asgs.sh               # ABS mesh blocks, SA1s, mesh block counts
 bash scripts/fetch_special_sources.sh    # schools, universities, bathymetry
+# ABS Census TableBuilder (needs an ABS account with TableBuilder access), 2021 Census, Counting: Person Records, exported as CSV:
+#   data/abs/tb/Table A1.csv  rows SA1 (UR), columns SA2 (POW), NSW
+#   data/abs/tb/tabB.csv      rows SA2 (UR), columns SA2 (POW), NSW
 export PYTHONPATH=scripts
 python scripts/he_mode_type.py           # university attendance modes from the DoE pivot table
 bash scripts/osm_poi_extract.sh          # named OSM features for campuses, venues, beaches, hospitals
@@ -59,6 +64,7 @@ python scripts/build_entertainment.py    # venues, beaches, shopping, hospitals
 python scripts/assemble_demand.py        # add special demand to the base matrix
 python scripts/build_bathy_composite.py  # composite water depths
 python scripts/build_bathymetry.py       # depth index + ocean tiles, re-merge map tiles
+python scripts/build_walk_graph.py       # walk_graph.bin.gz + footpaths in roads.geojson (game 1.7.17+)
 bash scripts/route_and_package.sh        # OSRM routing, config/description, deliverables/SYD.zip
 ```
 

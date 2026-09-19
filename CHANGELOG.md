@@ -1,5 +1,50 @@
 # Changelog
 
+## v2.2.0 — 2026-09-19
+
+2021 Census commutes, walking along real streets for Subway Builder 1.7.17's walk graph, and pools no
+longer counting as water. The map code is unchanged, so v2.x saves load; the commute demand is new.
+
+- **Commutes now come from the 2021 Census** (ABS TableBuilder) instead of TfNSW's 2011 travel-zone
+  table: where each SA1's workers work (by SA2), and SA2-to-SA2 totals.
+  - Fitted to TfNSW's 2026 projections as before. Only three SA2s at each end had too little 2021
+    data for their 2026 size and borrow their neighbours' pattern (the 2011 table needed this for
+    far more areas, as whole estates and business parks didn't exist yet).
+  - People who usually work at home can't be separated in these tables, so they are estimated from
+    the 2011 travel-mode field and taken out, as before.
+  - Against the 2021 Census itself, the share of commuters in the wrong SA3-to-SA3 pair falls from
+    8.4% to 7.1%, and the share working in their own SA3 is 31.1% (census 31.8%, v2.1 29.4%).
+  - 2.89 million commuters in 78,300 pops (v2.1: 2.93 million in 82,200); mean road commute 15.9 km
+    (v2.1: 16.0 km).
+  - Slightly more short trips: 15.6% of commuters travel under 3 km by road (v2.1: 14.3%), as the
+    2021 Census has more people working locally. The walk graph makes walks follow the street network,
+    which is longer than a straight line and so offsets this.
+
+- **Commuters walk the street network.** The map ships a walk graph (`walk_graph.bin.gz`) built from
+  OpenStreetMap: every street except motorways and their ramps, plus footpaths, shared paths, steps
+  and separately mapped sidewalks, minus anything tagged private or closed to pedestrians. Walks to
+  and from stations now follow real routes and go around the harbour, rivers and bays instead of
+  across them.
+  - 533,000 nodes and 742,000 edges covering 50,600 km of walkable ways; 17 MB compressed.
+  - Only the connected network is kept (98% of walkable length). Sidewalks are included, though the
+    game's docs suggest skipping them, because in Sydney about 1,000 km of footpaths (the airport
+    precinct, Wolli Creek, newer estates) only reach the streets through them.
+  - 99% of people's demand points are within the game's 250 m snapping distance. The rest, mostly
+    job sites behind private roads such as defence land and the Kurnell refinery, walk in straight
+    lines as before.
+- **Footpaths show on the map.** 108,000 footpaths, shared paths, steps and pedestrian malls are
+  added to `roads.geojson` as pedestrian ways (sidewalks are left off so streets don't get doubled).
+- **Fixed: pools, fountains and buried streams counted as water**, blocking track and stations.
+  depot takes every water feature in the map data except ditches, so backyard swimming pools,
+  CBD fountains and underground drains (the Tank Stream under Pitt Street, and culverts under
+  roads everywhere) were drawn as water and treated as water by the depth index. Pools, reflecting
+  pools, enclosed water under 500 m² and tunnelled waterways are now left out of both; the harbour,
+  rivers, lakes and park ponds are unchanged.
+- Older game versions ignore the walk graph and behave exactly as v2.1.0.
+- **Installing through Railyard:** Railyard currently only copies the files it knows about, so the
+  walk graph is left out until it recognises `walk_graph.bin`. Until then, copy `walk_graph.bin.gz`
+  from the ZIP into the installed map folder (`cities/data/SYD/`).
+
 ## v2.1.0 — 2026-09-18
 
 Water-depth fix on top of v2.0.0. The demand data is unchanged, so v2.0.0 saves carry over.
