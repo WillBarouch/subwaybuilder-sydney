@@ -19,6 +19,12 @@ so v2.x saves carry over.
     lines as before.
 - **Footpaths show on the map.** 108,000 footpaths, shared paths, steps and pedestrian malls are
   added to `roads.geojson` as pedestrian ways (sidewalks are left off so streets don't get doubled).
+- **Fixed: pools, fountains and buried streams counted as water**, blocking track and stations.
+  depot takes every water feature in the map data except ditches, so backyard swimming pools,
+  CBD fountains and underground drains (the Tank Stream under Pitt Street, and culverts under
+  roads everywhere) were drawn as water and treated as water by the depth index. Pools, reflecting
+  pools, enclosed water under 500 m² and tunnelled waterways are now left out of both; the harbour,
+  rivers, lakes and park ponds are unchanged.
 - Older game versions ignore the walk graph and behave exactly as v2.1.0.
 - **Installing through Railyard:** Railyard currently only copies the files it knows about, so the
   walk graph is left out until it recognises `walk_graph.bin`. Until then, copy `walk_graph.bin.gz`
